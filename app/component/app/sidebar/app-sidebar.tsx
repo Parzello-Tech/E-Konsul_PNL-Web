@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { IconCamera, IconCategory, IconChartBar, IconDashboard, IconDatabase, IconFileAi, IconFileDescription, IconFileWord, IconFolder, IconHelp, IconHistory, IconInnerShadowTop, IconListDetails, IconLogout, IconMessageCircleUser, IconReport, IconSearch, IconSettings, IconUser, IconUsers } from "@tabler/icons-react";
+import { IconCamera, IconCategory, IconChartBar, IconDashboard, IconDatabase, IconFileAi, IconFileDescription, IconFileWord, IconFolder, IconHelp, IconHistory, IconHome, IconInnerShadowTop, IconListDetails, IconLogout, IconMessageCircleUser, IconReport, IconSearch, IconSettings, IconUser, IconUsers } from "@tabler/icons-react";
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { NavUtama } from "./NavUtama";
@@ -37,45 +37,45 @@ const data = {
     ],
     mahasiswa: [
         {
-            name: "Dashboard",
-            url: "/dashboard",
-            icon: IconCategory,
+            name: "Home",
+            url: "/mahasiswa/",
+            icon: IconHome,
         },
         {
             name: "Konseling",
-            url: "/konseling",
+            url: "/konseling/",
             icon: IconMessageCircleUser,
         },
         {
             name: "Riwayat",
-            url: "/riwayat",
+            url: "/mahasiswa/riwayat",
             icon: IconHistory,
         },
         {
             name: "Profil",
-            url: "/profil",
+            url: "/mahasiswa/profil",
             icon: IconUser,
         },
     ],
     dosen: [
         {
-            name: "Dashboard",
-            url: "/dashboard",
-            icon: IconCategory,
+            name: "Home",
+            url: "/dosen/",
+            icon: IconHome,
         },
         {
             name: "Konseling",
-            url: "/konseling",
+            url: "/konseling/",
             icon: IconMessageCircleUser,
         },
         {
             name: "Riwayat",
-            url: "/riwayat",
+            url: "/dosen/riwayat",
             icon: IconHistory,
         },
         {
             name: "Profil",
-            url: "/profil",
+            url: "/dosen/profil",
             icon: IconUser,
         },
     ],
@@ -98,9 +98,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarHeader>
             <SidebarContent>
                 <Separator className="" />
-                <NavUtama items={data.admin} />
-                <NavUtama items={data.mahasiswa} />
-                <NavUtama items={data.dosen} />
+                <NavUtama items={data.admin} type="Admin" />
+                <NavUtama items={data.mahasiswa} type="Mahasiswa" />
+                <NavUtama items={data.dosen} type="Dosen" />
                 <Separator className="mt-auto" />
                 <NavSecondary items={data.navSecondary} className="" />
             </SidebarContent>

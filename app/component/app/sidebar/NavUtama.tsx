@@ -7,18 +7,20 @@ import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuAction, Sideba
 
 export function NavUtama({
     items,
+    type,
 }: {
     items: {
         name: string;
         url: string;
         icon: Icon;
     }[];
+    type: "Admin" | "Mahasiswa" | "Dosen";
 }) {
     const { isMobile } = useSidebar();
 
     return (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>Menu</SidebarGroupLabel>
+            <SidebarGroupLabel>{type}</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map((item) => (
                     <SidebarMenuItem key={item.name}>

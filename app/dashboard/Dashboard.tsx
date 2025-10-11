@@ -2,7 +2,7 @@ import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } 
 import { IconTrendingUp, IconTrendingDown, IconUsers, IconChevronRight, IconSchool, IconChalkboard, IconUserShare } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChartAreaInteractive } from "../component/chart-area-interactive";
+import { ChartAreaInteractive } from "../component/app/chart-area-interactive";
 
 export default function DashboardAdmin() {
     const Menu = [
