@@ -4,7 +4,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/app/component/app/sidebar/app-sidebar";
 import { SiteHeader } from "@/app/component/app/sidebar/site-header";
 import { useParams } from "next/navigation";
-import DetailKonseling from "./DetailKonseling";
+import DetailKonseling from "./KonselingPage";
 
 export default function Page() {
     const params = useParams();

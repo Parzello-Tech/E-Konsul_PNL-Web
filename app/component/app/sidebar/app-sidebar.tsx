@@ -24,7 +24,7 @@ const data = {
         },
         {
             title: "Logout",
-            url: "#",
+            url: "/logout",
             icon: IconLogout,
         },
     ],
@@ -38,44 +38,36 @@ const data = {
     mahasiswa: [
         {
             name: "Home",
-            url: "/mahasiswa/",
+            url: "/mahasiswa",
             icon: IconHome,
         },
         {
             name: "Konseling",
-            url: "/konseling/",
+            url: "/konseling",
             icon: IconMessageCircleUser,
         },
-        {
-            name: "Riwayat",
-            url: "/mahasiswa/riwayat",
-            icon: IconHistory,
-        },
+
         {
             name: "Profil",
-            url: "/mahasiswa/profil",
+            url: "/profil",
             icon: IconUser,
         },
     ],
     dosen: [
         {
             name: "Home",
-            url: "/dosen/",
+            url: "/dosen",
             icon: IconHome,
         },
         {
             name: "Konseling",
-            url: "/konseling/",
+            url: "/konseling",
             icon: IconMessageCircleUser,
         },
-        {
-            name: "Riwayat",
-            url: "/dosen/riwayat",
-            icon: IconHistory,
-        },
+
         {
             name: "Profil",
-            url: "/dosen/profil",
+            url: "/profil",
             icon: IconUser,
         },
     ],

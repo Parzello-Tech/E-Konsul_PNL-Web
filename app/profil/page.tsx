@@ -1,15 +1,9 @@
-"use client";
-
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/app/component/app/sidebar/app-sidebar";
-import { SiteHeader } from "@/app/component/app/sidebar/site-header";
-import { useParams } from "next/navigation";
-import DetailKonseling from "./DetailKonseling";
+import { AppSidebar } from "../component/app/sidebar/app-sidebar";
+import { SiteHeader } from "../component/app/sidebar/site-header";
+import ProfilPage from "./ProfilPage";
 
 export default function Page() {
-    const params = useParams();
-    const id_konseling = params.id as string;
-
     return (
         <SidebarProvider
             style={
@@ -26,7 +20,7 @@ export default function Page() {
                     <div className="@container/main flex flex-1 flex-col gap-2">
                         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
                             {/* ISI */}
-                            <DetailKonseling id_konseling={id_konseling} />
+                            <ProfilPage />
                             {/* ISI */}
                         </div>
                     </div>

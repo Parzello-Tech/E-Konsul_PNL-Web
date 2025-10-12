@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { IconTrendingUp, IconTrendingDown, IconUsers, IconChevronRight, IconSchool, IconChalkboard, IconUserShare, IconChartBar, IconChartPie, IconCloud, IconMoodEmpty, IconMessage, IconMessage2Plus } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +17,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import Link from "next/link";
 import BimbinganItemCard from "../component/app/BimbinganItemCard";
+
+import { cn } from "@/lib/utils";
 
 export default function MahasiswaHomePage() {
     return (

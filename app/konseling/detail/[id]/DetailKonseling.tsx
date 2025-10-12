@@ -22,8 +22,11 @@ import { Label } from "@/components/ui/label";
 
 import { useRouter } from "next/navigation";
 
-export default function DetailKonseling() {
-    const router = useRouter();
+interface DetailKonselingProps {
+    id_konseling: string;
+}
+
+export default function DetailKonseling({ id_konseling }: DetailKonselingProps) {
     const connectionColor = "text-green-600 bg-green-100";
     return (
         <div>
@@ -31,13 +34,14 @@ export default function DetailKonseling() {
                 <Card data-slot="card">
                     <CardHeader>
                         <div className="mb-2 flex items-center justify-between">
-                            <Link href={"/mahasiswa"}>
+                            <Link href={"#"} onClick={() => history.back()}>
                                 <Button>
                                     <IconChevronLeft />
                                 </Button>
                             </Link>
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-col items-end gap-0">
                                 <CardTitle className="text-lg font-semibold">Detail Konseling</CardTitle>
+                                <CardDescription className="text-sm text-muted-foreground">#{id_konseling}</CardDescription>
                             </div>
                         </div>
                         <Separator />
