@@ -10,10 +10,10 @@ const nextConfig: NextConfig = {
         // ⛔ Abaikan error TypeScript saat build
         ignoreBuildErrors: true,
     },
-    output: "export", // 🧠 ini menggantikan next export
+    /*  output: "export",
     images: {
-        unoptimized: true, // penting biar gambar bisa jalan di static mode
-    },
+        unoptimized: true,
+    }, */
 };
 
 export default nextConfig;
