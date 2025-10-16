@@ -14,6 +14,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getUserData } from "@/backend/auth";
 import { BASE_URL } from "@/backend/api";
+import { getAllDosen } from "@/backend/DosenBackend";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function FormKonseling() {
     const router = useRouter();
@@ -32,34 +34,40 @@ export default function FormKonseling() {
 
     const [aturSelesai, setAturSelesai] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [listDosen, setListDosen] = useState<{ id: string; nip: string; nama: string; prodi_id: string; profile_photo?: string }[]>([]);
+    const [listDosen, setListDosen] = useState<{ user_id: string; dosen_id: string; nip: string; nama: string; profile_photo?: string }[]>([]);
 
     useEffect(() => {
         const user = getUserData();
-        if (user) {
-            setFormData((prev) => ({ ...prev, mahasiswa_id: user.profil.mahasiswa_id }));
+        if (user?.profil?.mahasiswa_id) {
+            setFormData((prev) => ({
+                ...prev,
+                mahasiswa_id: user.profil.mahasiswa_id,
+            }));
         }
 
-        /* fetchDosen(); */
-        setListDosen([
-            { id: "1", nip: "123456", nama: "Dr. Budi Santoso", prodi_id: "TI", profile_photo: "https://avatar.iran.liara.run/public/6" },
-            { id: "2", nip: "654321", nama: "Prof. Siti Aminah", prodi_id: "SI", profile_photo: "https://avatar.iran.liara.run/public/6" },
-            { id: "3", nip: "112233", nama: "Dr. Agus Salim", prodi_id: "TK", profile_photo: "https://avatar.iran.liara.run/public/6" },
-        ]);
+        fetchDosen();
     }, []);
 
     const fetchDosen = async () => {
+        setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/api_ekonsul/user/get_all_dosen.php`);
-            const result = await res.json();
+            const result = await getAllDosen();
 
-            if (result.status === "success") {
-                setListDosen(result.data);
-            } else {
-                console.error("Gagal ambil dosen:", result.message);
+            if (!Array.isArray(result)) {
+                console.error("Format data dosen tidak valid:", result);
+                setListDosen([]);
+                return;
             }
-        } catch (error) {
-            console.error("Error fetch dosen:", error);
+
+            // Filter hanya dosen yang valid
+            const filtered = result.filter((d) => d && d.dosen_id && d.nip && d.nama && d.profile_photo);
+
+            // Tambahkan pilihan default
+            setListDosen([{ user_id: "", dosen_id: "", nip: "", nama: "Pilih Dosen Pembimbing", profile_photo: "" }, ...filtered]);
+        } catch (err) {
+            console.error("Gagal memuat data dosen:", err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -80,7 +88,7 @@ export default function FormKonseling() {
                 alert("Konseling berhasil diajukan!");
                 router.push("/mahasiswa");
             } else {
-                alert("Gagal: " + result.message);
+                alert("Gagal: " + (result.message || "Tidak diketahui"));
             }
         } catch (error) {
             console.error("Error:", error);
@@ -110,19 +118,33 @@ export default function FormKonseling() {
 
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        {/* Dosen */}
+                        {/* Pilih Dosen */}
                         <div>
-                            <Label>Pilih Dosen Pembimbing</Label>
+                            <Label className="mb-2">Pilih Dosen Pembimbing</Label>
                             <Select onValueChange={(v) => setFormData((prev) => ({ ...prev, dosen_id: v }))}>
                                 <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Dosen Pembimbing" />
+                                    <SelectValue placeholder="Pilih Dosen Pembimbing" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {listDosen.map((dosen) => (
-                                        <SelectItem key={dosen.id} value={dosen.id}>
-                                            <div className="flex items-center gap-3">
-                                                <img src={dosen.profile_photo} alt={dosen.nama} className="w-8 h-8 rounded-full object-cover border" />
-                                                <span>{dosen.nama}</span>
+                                        <SelectItem key={dosen.dosen_id} value={dosen.dosen_id || "none"}>
+                                            <div className="flex items-center gap-3 my-1">
+                                                <Avatar className="h-6 w-6">
+                                                    <AvatarImage src={dosen.profile_photo || "https://avatar.iran.liara.run/public/6"} alt={dosen.nama} />
+                                                    <AvatarFallback>
+                                                        {dosen.nama
+                                                            ?.split(" ")
+                                                            .map((n) => n[0])
+                                                            .join("")
+                                                            .toUpperCase()
+                                                            .slice(0, 2)}
+                                                    </AvatarFallback>
+                                                </Avatar>
+
+                                                <div className="flex flex-col text-left">
+                                                    <span className="font-medium">{dosen.nama}</span>
+                                                    {dosen.nip && <span className="text-xs text-muted-foreground">NIP: {dosen.nip}</span>}
+                                                </div>
                                             </div>
                                         </SelectItem>
                                     ))}
@@ -130,10 +152,10 @@ export default function FormKonseling() {
                             </Select>
                         </div>
 
-                        {/* Tujuan */}
+                        {/* Tujuan Konseling */}
                         <div>
-                            <Label>Tujuan Bimbingan</Label>
-                            <Select onValueChange={(v) => setFormData((prev) => ({ ...prev, tujuan_konseling: v }))}>
+                            <Label className="mb-2">Tujuan Bimbingan</Label>
+                            <Select value={formData.tujuan_konseling} onValueChange={(v) => setFormData((prev) => ({ ...prev, tujuan_konseling: v }))}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Pilih Tujuan Bimbingan" />
                                 </SelectTrigger>
@@ -146,24 +168,25 @@ export default function FormKonseling() {
                             </Select>
                         </div>
 
+                        {/* Topik & Catatan */}
                         <div>
-                            <Label>Topik Bimbingan (Opsional)</Label>
-                            <Input placeholder="Masukkan topik" onChange={(e) => setFormData((prev) => ({ ...prev, topik_konseling: e.target.value }))} />
+                            <Label className="mb-2">Topik Bimbingan (Opsional)</Label>
+                            <Input placeholder="Masukkan topik" value={formData.topik_konseling} onChange={(e) => setFormData((prev) => ({ ...prev, topik_konseling: e.target.value }))} />
                         </div>
 
                         <div>
-                            <Label>Catatan (Opsional)</Label>
-                            <Textarea placeholder="Tuliskan catatan..." onChange={(e) => setFormData((prev) => ({ ...prev, catatan: e.target.value }))} />
+                            <Label className="mb-2">Catatan (Opsional)</Label>
+                            <Textarea placeholder="Tuliskan catatan..." value={formData.catatan} onChange={(e) => setFormData((prev) => ({ ...prev, catatan: e.target.value }))} />
                         </div>
 
                         <Separator />
 
                         {/* Jenis Konseling */}
                         <div>
-                            <Label>Jenis Konseling</Label>
-                            <Select onValueChange={(v) => setFormData((prev) => ({ ...prev, jenis_konseling: v }))}>
+                            <Label className="mb-2">Jenis Konseling</Label>
+                            <Select value={formData.jenis_konseling} onValueChange={(v) => setFormData((prev) => ({ ...prev, jenis_konseling: v }))}>
                                 <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Jenis Konseling" />
+                                    <SelectValue placeholder="Pilih Jenis Konseling" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="Ditentukan Dosen">Ditentukan Dosen</SelectItem>
@@ -173,31 +196,33 @@ export default function FormKonseling() {
                             </Select>
                         </div>
 
+                        {/* Tanggal & Waktu */}
                         <div>
-                            <Label>Tanggal Konseling</Label>
-                            <Input type="date" onChange={(e) => setFormData((prev) => ({ ...prev, tanggal_konseling: e.target.value }))} />
+                            <Label className="mb-2">Tanggal Konseling</Label>
+                            <Input type="date" value={formData.tanggal_konseling} onChange={(e) => setFormData((prev) => ({ ...prev, tanggal_konseling: e.target.value }))} />
                         </div>
 
                         <div>
-                            <Label>Waktu Mulai</Label>
-                            <Input type="time" onChange={(e) => setFormData((prev) => ({ ...prev, waktu_mulai: e.target.value }))} />
+                            <Label className="mb-2">Waktu Mulai</Label>
+                            <Input type="time" value={formData.waktu_mulai} onChange={(e) => setFormData((prev) => ({ ...prev, waktu_mulai: e.target.value }))} />
                         </div>
 
-                        <div className="flex items-center gap-3">
-                            <Checkbox checked={aturSelesai} onCheckedChange={(v) => setAturSelesai(!!v)} />
+                        <div className="flex items-center gap-3 my-5">
+                            <Checkbox checked={aturSelesai} onCheckedChange={(v) => setAturSelesai(Boolean(v))} />
                             <Label>Atur waktu selesai</Label>
                         </div>
 
                         {aturSelesai && (
                             <div>
-                                <Label>Waktu Selesai</Label>
-                                <Input type="time" onChange={(e) => setFormData((prev) => ({ ...prev, waktu_selesai: e.target.value }))} />
+                                <Label className="mb-2">Waktu Selesai</Label>
+                                <Input type="time" value={formData.waktu_selesai} onChange={(e) => setFormData((prev) => ({ ...prev, waktu_selesai: e.target.value }))} />
                             </div>
                         )}
 
                         <div className="pt-2">
                             <Button type="submit" size="lg" className="w-full" disabled={loading}>
-                                {loading ? "Mengirim..." : "Ajukan Bimbingan"} <IconCalendarTime className="ml-2" />
+                                {loading ? "Mengirim..." : "Ajukan Bimbingan"}
+                                <IconCalendarTime className="ml-2" />
                             </Button>
                         </div>
                     </form>

@@ -12,6 +12,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 import { BASE_URL } from "@/backend/api";
+import { getAllKonseling, getKonselingMahasiswaID } from "@/backend/KonselingBackend";
+import { m } from "motion/react";
+import { getUserData } from "@/backend/auth";
 
 export type Konseling = {
     id_konseling: string;
@@ -122,30 +125,12 @@ export function DataKonseling() {
 
     React.useEffect(() => {
         const fetchData = async () => {
+            const user = getUserData();
             try {
-                const res = await fetch(`${BASE_URL}/api_ekonsul/konseling/get_konseling_all.php`);
-
-                // Cek status response dan tipe kontennya
-                if (!res.ok) {
-                    throw new Error(`HTTP error! Status: ${res.status}`);
-                }
-
-                const contentType = res.headers.get("Content-Type");
-                if (contentType && contentType.includes("application/json")) {
-                    const json = await res.json();
-                    alert(JSON.stringify(json));
-                    if (json.status === "success") {
-                        setData(json.data);
-                    } else {
-                        setData([]);
-                    }
-                } else {
-                    const text = await res.text();
-                    throw new Error(`Response is not JSON, but HTML: ${text}`);
-                }
+                const result = await getKonselingMahasiswaID(user.profil.mahasiswa_id);
+                setData(result);
             } catch (err) {
                 setError("Gagal memuat data konseling");
-                console.error(err);
             } finally {
                 setLoading(false);
             }

@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "./component/Navbar";
 import { Footer } from "./component/Footer";
 import { ThemeProvider } from "./provider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
                     <main className="flex-1 ">{children}</main>
                 </ThemeProvider>
+                <Toaster richColors closeButton position="top-right" />
             </body>
         </html>
     );

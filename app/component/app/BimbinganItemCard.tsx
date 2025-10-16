@@ -10,15 +10,17 @@ interface BimbinganItemCardProps {
     title: string;
     subtitle: string;
     name: string;
+    no_induk: string;
     id: string;
     avatarUrl?: string;
     date: string;
-    time: string;
-    statusConnection: "Online" | "Offline";
-    statusActivity: "Diterima" | "Berlangsung" | "Diajukan" | "Selesai" | "Ditolak" | "Dibatalkan";
+    waktu_mulai: string;
+    waktu_selesai: string;
+    statusConnection: string;
+    statusActivity: string;
 }
 
-export default function BimbinganItemCard({ title, subtitle, name, id, avatarUrl, date, time, statusConnection, statusActivity }: BimbinganItemCardProps) {
+export default function BimbinganItemCard({ title, subtitle, name, no_induk, id, avatarUrl, date, waktu_mulai, waktu_selesai, statusConnection, statusActivity }: BimbinganItemCardProps) {
     const connectionColor = statusConnection === "Online" ? "text-green-600 bg-green-100" : "text-gray-600 bg-gray-100";
 
     const activityColor = {
@@ -53,7 +55,7 @@ export default function BimbinganItemCard({ title, subtitle, name, id, avatarUrl
                         </Avatar>
                         <div className="flex flex-col items-start">
                             <ItemTitle className="text-sm font-medium">{name}</ItemTitle>
-                            <ItemDescription className="text-xs">{id}</ItemDescription>
+                            <ItemDescription className="text-xs">{no_induk}</ItemDescription>
                         </div>
                     </div>
                     <ItemActions>
@@ -66,9 +68,9 @@ export default function BimbinganItemCard({ title, subtitle, name, id, avatarUrl
                     <div className="flex flex-col items-start ">
                         <span>{date}</span>
                         <div>
-                            <span>{time}</span>
+                            <span>{waktu_mulai}</span>
                             <span> - </span>
-                            <span>{time}</span>
+                            <span>{waktu_selesai}</span>
                         </div>
                     </div>
 
