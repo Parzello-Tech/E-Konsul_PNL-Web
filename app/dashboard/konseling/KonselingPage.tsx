@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { IconTrendingUp, IconTrendingDown, IconUsers, IconChevronRight, IconSchool, IconChalkboard, IconUserShare } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";

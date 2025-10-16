@@ -3,13 +3,9 @@
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/app/component/app/sidebar/app-sidebar";
 import { SiteHeader } from "@/app/component/app/sidebar/site-header";
-import { useParams } from "next/navigation";
 import JurusanProdiPage from "./KonselingPage";
 
 export default function Page() {
-    const params = useParams();
-    const id = params.id; // "123"
-
     return (
         <SidebarProvider
             style={

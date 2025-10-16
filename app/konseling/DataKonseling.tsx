@@ -11,10 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
-import { BASE_URL } from "@/backend/api";
-import { getAllKonseling, getKonselingDosenID, getKonselingMahasiswaID } from "@/backend/KonselingBackend";
-import { m } from "motion/react";
+import { getKonselingDosenID, getKonselingMahasiswaID } from "@/backend/KonselingBackend";
 import { getUserData } from "@/backend/auth";
+import router from "next/router";
 
 export type Konseling = {
     id_konseling: string;
@@ -89,7 +88,6 @@ export const columns: ColumnDef<Konseling>[] = [
         enableHiding: false,
         cell: ({ row }) => {
             const item = row.original;
-            const router = useRouter();
 
             return (
                 <DropdownMenu>
@@ -130,7 +128,7 @@ export function DataKonseling() {
             setError(null);
 
             try {
-                let result: any[] = [];
+                let result: Konseling[] = [];
 
                 if (user.role_id === 2) {
                     // Jika role mahasiswa atau dosen

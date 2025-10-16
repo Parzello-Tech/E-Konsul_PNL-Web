@@ -31,7 +31,15 @@ export default function ProfilPage() {
     const [user, setUser] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [editMode, setEditMode] = useState(false);
-    const [form, setForm] = useState<any>({});
+    const [form, setForm] = useState<UserProfile["profil"]>({
+        nama: "",
+        nim: "",
+        nip: "",
+        semester: "",
+        bio: "",
+        prodi_name: "",
+        jurusan_name: "",
+    });
 
     useEffect(() => {
         if (isLoggedIn()) {
