@@ -21,9 +21,9 @@ export default function LoginPage() {
             if (user.role_id == 1) {
                 router.push("/dashboard");
             } else if (user.role_id == 2) {
-                router.push("/dosen");
+                router.push("/homepage");
             } else if (user.role_id == 3) {
-                router.push("/mahasiswa");
+                router.push("/homepage");
             }
         }
     }, [router]);
@@ -56,9 +56,9 @@ export default function LoginPage() {
                 if (data.data.role_id == 1) {
                     router.push("/dashboard");
                 } else if (data.data.role_id == 2) {
-                    router.push("/dosen");
+                    router.push("/homepage");
                 } else if (data.data.role_id == 3) {
-                    router.push("/mahasiswa");
+                    router.push("/homepage");
                 }
             } else {
                 setErrorMsg(data.message || "Login gagal");
@@ -104,12 +104,12 @@ export default function LoginPage() {
                     </CardContent>
 
                     <CardFooter className="p-4 border-t border-border [.border-t]:pt-4">
-                        <p className="text-sm text-muted-foreground">
+                        {/*  <p className="text-sm text-muted-foreground">
                             Belum punya akun?{" "}
                             <a href="/register" className="text-primary underline">
                                 Register
                             </a>
-                        </p>
+                        </p> */}
                     </CardFooter>
                 </MagicCard>
             </Card>

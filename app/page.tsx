@@ -18,6 +18,9 @@ import { cn } from "@/lib/utils";
 import { ProgressiveBlur } from "@/components/magicui/progressive-blur";
 import { Footer } from "./component/Footer";
 import { Navbar } from "./component/Navbar";
+import { BASE_URL } from "@/backend/api";
+import router from "next/router";
+import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context";
 
 export default function Home() {
     return (
@@ -26,7 +29,7 @@ export default function Home() {
             <div className=" font-sans flex flex-col min-h-screen bg-background dark:bg-[#140205ff]">
                 <ScrollProgress className="top-[72px]" />
                 {/* Hero Section */}
-                <section className="flex flex-col items-center justify-center text-center py-20 px-6 bg-gradient-to-b from-background to-violet-50 dark:to-[#140205ff]">
+                <section id="home" className="flex flex-col items-center justify-center text-center py-20 px-6 bg-gradient-to-b from-background to-violet-50 dark:to-[#140205ff]">
                     {/* Shiny */}
                     <div className=" flex items-center justify-center">
                         <div className={cn("group rounded-full border border-black/5 bg-neutral-100 text-base text-white transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800")}>
@@ -54,7 +57,8 @@ export default function Home() {
                     <div className="my-10"></div>
 
                     <div className="relative">
-                        <Safari url="ekonsul" mode="default" className="size-full shadow-lg " imageSrc="https://portfolio-mkholis.vercel.app/images/portfolio/parzelloweb.png" />
+                        <div className=""></div>
+                        <Safari url="ekonsul" mode="default" className="size-full shadow-lg " imageSrc={`/images/web_showcase.png`} />
                     </div>
                 </section>
 
@@ -158,7 +162,7 @@ export default function Home() {
                         </div>
                     </section>
                     {/* Call to Action */}
-                    <section className="bg-white dark:bg-[#370b0bff] mb-15 rounded-lg text-foreground py-16 text-center backdrop-blur-lg">
+                    <section id="cta" className="bg-white dark:bg-[#370b0bff] mb-15 rounded-lg text-foreground py-16 text-center backdrop-blur-lg">
                         <h2 className="text-3xl sm:text-4xl font-bold mb-4">Siap Memulai Bimbingan Lebih Mudah?</h2>
                         <p className="text-foreground/50 mb-6">Gunakan E-Konsul untuk mendukung proses akademik Anda secara efektif dan efisien.</p>
 

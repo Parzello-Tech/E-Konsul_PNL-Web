@@ -69,7 +69,7 @@ export default function ProfilPage() {
     const handleSave = async () => {
         if (!user) return;
         try {
-            const res = await fetch(`https://308d788a9260.ngrok-free.app/api_ekonsul/user/update_profil.php`, {
+            const res = await fetch(`${BASE_URL}/api_ekonsul/user/update_profil.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -136,11 +136,11 @@ export default function ProfilPage() {
                 <Separator />
 
                 <CardContent className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <ProfileField label="Nama" value={form.nama} onChange={(v) => handleChange("nama", v)} editable={editMode} />
+                    <ProfileField label="Nama" value={form.nama} onChange={(v) => handleChange("nama", v)} editable={editMode} readOnly />
                     {user.role_id === 3 ? (
                         <>
                             <ProfileField label="NIM" value={profil.nim || "-"} readOnly />
-                            <ProfileField label="Semester" value={form.semester || "-"} onChange={(v) => handleChange("semester", v)} editable={editMode} />
+                            <ProfileField label="Semester" value={form.semester || "-"} onChange={(v) => handleChange("semester", v)} editable={editMode} readOnly />
                         </>
                     ) : (
                         <ProfileField label="NIP" value={profil.nip || "-"} readOnly />

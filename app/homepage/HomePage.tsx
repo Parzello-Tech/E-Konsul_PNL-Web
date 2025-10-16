@@ -15,9 +15,13 @@ import { getKonselingDosenID, getKonselingMahasiswaID } from "@/backend/Konselin
 import BimbinganItemCard from "../component/app/BimbinganItemCard";
 import { HeroCarousel } from "../component/app/Carousel";
 import { Konseling } from "@/backend/interface";
+import { getRelasiByDosenId, getRelasiByMahasiswaId } from "@/backend/RelasiBimbinganBackend";
+import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item";
+import { Badge } from "@/components/ui/badge";
 
-export default function MahasiswaHomePage() {
+export default function HomePage() {
     const [konselingList, setKonselingList] = useState<Konseling[]>([]);
+    const [relasiList, setRelasiList] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -41,6 +45,24 @@ export default function MahasiswaHomePage() {
         }
 
         fetchData();
+
+        const fetchRelasi = async () => {
+            const user = getUserData();
+            try {
+                if (isMahasiswa()) {
+                    const data = await getRelasiByMahasiswaId(user.profil.mahasiswa_id);
+                    setRelasiList(data);
+                } else if (isDosen()) {
+                    const data = await getRelasiByDosenId(user.profil.dosen_id);
+                    setRelasiList(data);
+                }
+            } catch (err) {
+                console.error("Gagal memuat relasi bimbingan:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchRelasi();
     }, []);
 
     // ✅ Filter status disesuaikan dengan status yang kamu gunakan
@@ -51,7 +73,7 @@ export default function MahasiswaHomePage() {
 
     const selesai = konselingList.filter((item) => {
         const status = item.status.trim().toLowerCase();
-        return ["selesai", "dibatalkan"].includes(status);
+        return ["selesai", "dibatalkan", "ditolak"].includes(status);
     });
 
     return (
@@ -77,11 +99,13 @@ export default function MahasiswaHomePage() {
                     </CardHeader>
 
                     <CardContent>
-                        <Link href="/homepage/konseling/tambah" className="w-full">
-                            <Button variant="default" size="lg" className="w-full">
-                                Mulai Bimbingan <IconMessage2Plus className="ml-2" />
-                            </Button>
-                        </Link>
+                        {isMahasiswa() && (
+                            <Link href="/homepage/konseling/tambah" className="w-full">
+                                <Button variant="default" size="lg" className="w-full">
+                                    Mulai Bimbingan <IconMessage2Plus className="ml-2" />
+                                </Button>
+                            </Link>
+                        )}
 
                         <div className="my-3">
                             <Separator />
@@ -128,8 +152,9 @@ export default function MahasiswaHomePage() {
                                             <EmptyMedia variant="icon">
                                                 <IconMoodEmpty />
                                             </EmptyMedia>
-                                            <EmptyTitle>Tidak ada konseling aktif</EmptyTitle>
-                                            <EmptyDescription>Mulai bimbingan baru dengan dosen pembimbing Anda.</EmptyDescription>
+                                            <EmptyTitle>Tidak ada Bimbingan aktif</EmptyTitle>
+                                            <EmptyDescription>{isMahasiswa() && "Mulai bimbingan baru dengan dosen pembimbing Anda."}</EmptyDescription>
+                                            <EmptyDescription>{isDosen() && "Permintaan bimbingan Mahasiswa akan muncul disini."}</EmptyDescription>
                                         </EmptyHeader>
                                     </Empty>
                                 )}
@@ -171,15 +196,9 @@ export default function MahasiswaHomePage() {
                                                 <IconMoodEmpty />
                                             </EmptyMedia>
                                             <EmptyTitle>Belum ada Bimbingan Selesai</EmptyTitle>
-                                            <EmptyDescription>Mulai konseling sekarang dan dapatkan dukungan dari dosen.</EmptyDescription>
+                                            <EmptyDescription>Bimbingan selesai akan tampil di sini.</EmptyDescription>
                                         </EmptyHeader>
-                                        <EmptyContent>
-                                            <Link href="/mahasiswa/konseling/tambah">
-                                                <Button variant="default" size="lg">
-                                                    Mulai Bimbingan
-                                                </Button>
-                                            </Link>
-                                        </EmptyContent>
+                                        <EmptyContent></EmptyContent>
                                     </Empty>
                                 )}
                             </TabsContent>
@@ -192,33 +211,97 @@ export default function MahasiswaHomePage() {
             <div className="my-5">
                 <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-3">
                     {/* Card 1 - Dosen Pembimbing */}
-                    <Card data-slot="card">
-                        <CardHeader>
-                            <div className="mb-2 flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <IconUsers />
-                                    <CardTitle className="text-lg font-semibold">Dosen Pembimbing</CardTitle>
-                                </div>
-                            </div>
-                            <Separator />
-                        </CardHeader>
-                        <CardContent>
-                            {konselingList.length > 0 ? (
-                                <div className="flex items-center gap-3">
-                                    <Avatar>
-                                        <AvatarImage src={""} />
-                                        <AvatarFallback>DP</AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                        <p className="font-medium">{konselingList[0].dosen?.fullname ?? "Tidak diketahui"}</p>
-                                        <p className="text-sm text-muted-foreground">{konselingList[0].dosen?.nip ?? "-"}</p>
+                    {loading ? (
+                        <Card data-slot="card">
+                            <CardHeader>
+                                <div className="mb-2 flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <IconUsers />
+                                        <CardTitle className="text-lg font-semibold">{isMahasiswa() ? "Dosen Pembimbing" : "Mahasiswa Bimbingan"}</CardTitle>
                                     </div>
                                 </div>
-                            ) : (
-                                <p className="text-sm text-muted-foreground">Belum ada dosen pembimbing terdaftar.</p>
-                            )}
-                        </CardContent>
-                    </Card>
+                                <Separator />
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-muted-foreground">Memuat data...</p>
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        <Card data-slot="card">
+                            <CardHeader>
+                                <div className="mb-2 flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <IconUsers />
+                                        {isMahasiswa() && <CardTitle className="text-lg font-semibold">Dosen Pembimbing</CardTitle>}
+                                        {isDosen() && <CardTitle className="text-lg font-semibold">Mahasiswa Bimbingan</CardTitle>}
+                                    </div>
+                                    {relasiList.length > 0 && <Badge>{relasiList.length}</Badge>}
+                                </div>
+                                <Separator />
+                            </CardHeader>
+
+                            <CardContent>
+                                <ScrollArea className="h-50 p-3 rounded-md border whitespace-nowrap">
+                                    {relasiList.length > 0 ? (
+                                        <div className="space-y-3">
+                                            {isMahasiswa() &&
+                                                relasiList.map((item, i) => (
+                                                    <Item variant="outline" key={i}>
+                                                        <ItemContent>
+                                                            <div className="flex item-center gap-3">
+                                                                <Avatar>
+                                                                    <AvatarImage src={item.dosen?.foto ?? ""} />
+                                                                    <AvatarFallback>{item.nama_dosen?.[0] ?? "D"}</AvatarFallback>
+                                                                </Avatar>
+                                                                <div className="">
+                                                                    <ItemTitle>{item.nama_dosen ?? "Tidak diketahui"}</ItemTitle>
+                                                                    <ItemDescription>{item.nip ?? "-"}.</ItemDescription>
+                                                                    <Badge className="mt-1">{item.tipe_bimbingan}</Badge>
+                                                                </div>
+                                                            </div>
+                                                        </ItemContent>
+                                                        <ItemActions className="w-full">
+                                                            <Button variant="outline" size="sm" className="w-full">
+                                                                Lihat Profil
+                                                            </Button>
+                                                        </ItemActions>
+                                                    </Item>
+                                                ))}
+
+                                            {isDosen() &&
+                                                relasiList.map((item, i) => (
+                                                    <Item variant="outline" key={i}>
+                                                        <ItemContent>
+                                                            <div className="flex item-center gap-3">
+                                                                <Avatar>
+                                                                    <AvatarImage src={item.mahasiswa?.foto ?? ""} />
+                                                                    <AvatarFallback>{item.nama_mahasiswa?.[0] ?? "D"}</AvatarFallback>
+                                                                </Avatar>
+                                                                <div className="">
+                                                                    <ItemTitle>{item.nama_mahasiswa ?? "Tidak diketahui"}</ItemTitle>
+                                                                    <ItemDescription>{item.nim ?? "-"}.</ItemDescription>
+                                                                    <Badge className="mt-1">{item.tipe_bimbingan}</Badge>
+                                                                </div>
+                                                            </div>
+                                                        </ItemContent>
+                                                        <ItemActions className="w-full">
+                                                            <Button variant="outline" size="sm" className="w-full">
+                                                                Lihat Profil
+                                                            </Button>
+                                                        </ItemActions>
+                                                    </Item>
+                                                ))}
+                                        </div>
+                                    ) : (
+                                        <p className="text-sm text-muted-foreground">
+                                            {isMahasiswa() && "Belum ada Dosen Pembimbing terdaftar."}
+                                            {isDosen() && "Belum ada Mahasiswa Bimbingan terdaftar."}
+                                        </p>
+                                    )}
+                                </ScrollArea>
+                            </CardContent>
+                        </Card>
+                    )}
 
                     {/* Card 2 - Statistik Konsultasi */}
                     <Card data-slot="card">

@@ -16,13 +16,13 @@ export function Navbar() {
 
                 {/* Menu */}
                 <div className="hidden md:flex gap-6 font-medium text-gray-700 dark:text-gray-200">
-                    <Link href="#features" className="hover:text-black dark:hover:text-white transition">
+                    <Link href="#home" className="hover:text-black dark:hover:text-white transition">
                         Home
                     </Link>
-                    <Link href="#about" className="hover:text-black dark:hover:text-white transition">
-                        About
+                    <Link href="#features" className="hover:text-black dark:hover:text-white transition">
+                        Features
                     </Link>
-                    <Link href="#contact" className="hover:text-black dark:hover:text-white transition">
+                    <Link href="#cta" className="hover:text-black dark:hover:text-white transition">
                         CTA
                     </Link>
                 </div>

@@ -50,7 +50,7 @@ export default function KonselingActions({ data, isMahasiswa, isDosen, handleSta
 
                     if (status === "Diajukan" && isDosen()) {
                         return (
-                            <div>
+                            <div className="flex flex-col gap-2">
                                 <Button onClick={() => handleStatus(data.id_konseling.toString(), "Disetujui")} className="w-full" variant="default" size="lg">
                                     <IconCheck className="mr-2 size-5" />
                                     Setujui
@@ -68,45 +68,65 @@ export default function KonselingActions({ data, isMahasiswa, isDosen, handleSta
                     }
 
                     // === Disetujui ===
-                    if (status === "Disetujui" && today) {
-                        return (
-                            <Button className="w-full" size="lg">
-                                Ruang Konseling
-                                <ChevronRightIcon className="ml-2 size-5" />
-                            </Button>
-                        );
-                    }
-                    if (status === "Disetujui" && isMahasiswa()) {
-                        return (
-                            <Button className="w-full" size="lg">
-                                Ruang Konseling
-                                <ChevronRightIcon className="ml-2 size-5" />
-                            </Button>
-                        );
-                    }
-                    if (status === "Disetujui" && isDosen()) {
-                        return (
-                            <Button onClick={() => handleStatus(data.id_konseling.toString(), "Diajukan")} className="w-full" variant="destructive" size="lg">
-                                <IconCircleX className="mr-2 size-5" />
-                                Batalkan
-                            </Button>
-                        );
+                    if (status === "Disetujui") {
+                        // Jika hari ini adalah jadwal konseling (today == true)
+                        if (today) {
+                            return (
+                                <Button className="w-full" size="lg">
+                                    Ruang Konseling
+                                    <ChevronRightIcon className="ml-2 size-5" />
+                                </Button>
+                            );
+                        }
+
+                        // Jika pengguna adalah mahasiswa
+                        if (isMahasiswa()) {
+                            return (
+                                <Button className="w-full" size="lg">
+                                    Ruang Konseling
+                                    <ChevronRightIcon className="ml-2 size-5" />
+                                </Button>
+                            );
+                        }
+
+                        // Jika pengguna adalah dosen
+                        if (isDosen()) {
+                            return (
+                                <div className="flex flex-col gap-2">
+                                    <Button className="w-full" size="lg">
+                                        Ruang Konseling
+                                        <ChevronRightIcon className="ml-2 size-5" />
+                                    </Button>
+                                    <Button onClick={() => handleStatus(data.id_konseling.toString(), "Diajukan")} className="w-full" variant="destructive" size="lg">
+                                        <IconCircleX className="mr-2 size-5" />
+                                        Batalkan
+                                    </Button>
+                                </div>
+                            );
+                        }
                     }
 
                     // === Berlangsung (hari ini) ===
                     if (status === "Berlangsung" || (status === "Disetujui" && today)) {
                         return (
-                            <Button className="w-full" size="lg">
-                                Ruang Konseling
-                                <ChevronRightIcon className="ml-2 size-5" />
-                            </Button>
+                            <div className="flex flex-col gap-2">
+                                <Button className="w-full" size="lg">
+                                    Ruang Konseling
+                                    <ChevronRightIcon className="ml-2 size-5" />
+                                </Button>
+
+                                <Button onClick={() => handleStatus(data.id_konseling.toString(), "Diajukan")} className="w-full" variant="destructive" size="lg">
+                                    <IconCircleX className="mr-2 size-5" />
+                                    Batalkan
+                                </Button>
+                            </div>
                         );
                     }
 
                     // === Jadwal Ulang ===
                     if (status === "Jadwal Ulang" && isMahasiswa()) {
                         return (
-                            <div>
+                            <div className="flex flex-col gap-2">
                                 <Button className="w-full" size="lg">
                                     Terima Penjadwalan Ulang
                                     <IconCheck className="ml-2 size-5" />

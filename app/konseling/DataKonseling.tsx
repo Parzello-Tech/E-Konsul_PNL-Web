@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 import { BASE_URL } from "@/backend/api";
-import { getAllKonseling, getKonselingMahasiswaID } from "@/backend/KonselingBackend";
+import { getAllKonseling, getKonselingDosenID, getKonselingMahasiswaID } from "@/backend/KonselingBackend";
 import { m } from "motion/react";
 import { getUserData } from "@/backend/auth";
 
@@ -102,7 +102,7 @@ export const columns: ColumnDef<Konseling>[] = [
                         <DropdownMenuLabel>Aksi</DropdownMenuLabel>
                         <DropdownMenuItem onClick={() => router.push(`/konseling/detail/${item.id_konseling}`)}>Lihat Detail</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">Batalkan</DropdownMenuItem>
+                        {/* <DropdownMenuItem className="text-red-600">Batalkan</DropdownMenuItem> */}
                     </DropdownMenuContent>
                 </DropdownMenu>
             );
@@ -126,10 +126,25 @@ export function DataKonseling() {
     React.useEffect(() => {
         const fetchData = async () => {
             const user = getUserData();
+            setLoading(true);
+            setError(null);
+
             try {
-                const result = await getKonselingMahasiswaID(user.profil.mahasiswa_id);
+                let result: any[] = [];
+
+                if (user.role_id === 2) {
+                    // Jika role mahasiswa atau dosen
+                    result = await getKonselingDosenID(user.profil.dosen_id);
+                } else if (user.role_id === 3) {
+                    // Jika role mahasiswa atau dosen
+                    result = await getKonselingMahasiswaID(user.profil.mahasiswa_id);
+                } else {
+                    result = [];
+                }
+
                 setData(result);
             } catch (err) {
+                console.error("Fetch data error:", err);
                 setError("Gagal memuat data konseling");
             } finally {
                 setLoading(false);

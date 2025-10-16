@@ -15,7 +15,7 @@ export function NavUtama({
         url: string;
         icon: Icon;
     }[];
-    type: "Admin" | "Mahasiswa" | "Dosen";
+    type: string;
 }) {
     const { isMobile } = useSidebar();
     const pathname = usePathname(); // ambil URL aktif

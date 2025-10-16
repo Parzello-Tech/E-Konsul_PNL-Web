@@ -1,44 +1,85 @@
 "use client";
 
 import * as React from "react";
-import { IconCamera, IconCategory, IconChartBar, IconDashboard, IconDatabase, IconFileAi, IconFileDescription, IconFileWord, IconFolder, IconHelp, IconHistory, IconHome, IconInnerShadowTop, IconListDetails, IconLogout, IconMessageCircleUser, IconReport, IconSearch, IconSettings, IconUser, IconUsers } from "@tabler/icons-react";
+import { IconCategory, IconHome, IconMessageCircleUser, IconUser, IconLogout, IconInnerShadowTop, IconSchool, IconExchange, IconUsers, IconBubbleText, IconSlideshow } from "@tabler/icons-react";
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+
 import { NavUtama } from "./NavUtama";
 import { NavUser } from "./nav-user";
 import { NavSecondary } from "./nav-secondary";
 import { Separator } from "@/components/ui/separator";
+import { getUserData, isAdmin, isDosen, isMahasiswa } from "@/backend/auth";
+
+const userData = getUserData();
 
 const data = {
-    user: {
-        name: "shadcn",
-        email: "m@example.com",
-        avatar: "/avatars/shadcn.jpg",
-    },
+    // ✅ Jika admin, tidak isi user sama sekali
+    user: !isAdmin()
+        ? {
+              name: userData.profil.fullname || "Pengguna",
+              nomor_induk: (isMahasiswa() && userData.profil.nim) || (isDosen() && userData.profil.nip) || "000000000",
+              avatar: userData.profile_photo ? `${userData.profile_photo}` : "https://ui-avatars.com/api/?name=" + encodeURIComponent(userData.profil.fullname || "Pengguna"),
+          }
+        : null,
 
     navSecondary: [
-        {
-            title: "Settings",
-            url: "#",
-            icon: IconSettings,
-        },
         {
             title: "Logout",
             url: "/logout",
             icon: IconLogout,
         },
     ],
+
     admin: [
         {
             name: "Dashboard",
             url: "/dashboard",
             icon: IconCategory,
         },
+
+        {
+            name: "Kelola Bimbingan",
+            url: "/dashboard/bimbingan",
+            icon: IconBubbleText,
+        },
     ],
+
+    admin_core: [
+        {
+            name: "Jurusan & Prodi",
+            url: "/dashboard/jurusanprodi",
+            icon: IconSchool,
+        },
+        {
+            name: "Dosen",
+            url: "/dashboard/dosen",
+            icon: IconUsers,
+        },
+        {
+            name: "Mahasiswa",
+            url: "/dashboard/mahasiswa",
+            icon: IconUsers,
+        },
+        {
+            name: "Relasi Bimbingan",
+            url: "/dashboard/relasibimbingan",
+            icon: IconExchange,
+        },
+    ],
+
+    admin_setting: [
+        {
+            name: "Kustomisasi Carousel",
+            url: "/dashboard/kustomisasi/carousel",
+            icon: IconSlideshow,
+        },
+    ],
+
     mahasiswa: [
         {
             name: "Home",
-            url: "/mahasiswa",
+            url: "/homepage",
             icon: IconHome,
         },
         {
@@ -46,7 +87,6 @@ const data = {
             url: "/konseling",
             icon: IconMessageCircleUser,
         },
-
         {
             name: "Profil",
             url: "/profil",
@@ -56,7 +96,7 @@ const data = {
     dosen: [
         {
             name: "Home",
-            url: "/dosen",
+            url: "/homepage",
             icon: IconHome,
         },
         {
@@ -64,7 +104,6 @@ const data = {
             url: "/konseling",
             icon: IconMessageCircleUser,
         },
-
         {
             name: "Profil",
             url: "/profil",
@@ -88,17 +127,31 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
+
             <SidebarContent>
-                <Separator className="" />
-                <NavUtama items={data.admin} type="Admin" />
-                <NavUtama items={data.mahasiswa} type="Mahasiswa" />
-                <NavUtama items={data.dosen} type="Dosen" />
+                <Separator />
+
+                {/* ✅ Menu berdasarkan role */}
+                {isAdmin() && (
+                    <div>
+                        <NavUtama items={data.admin} type="Admin" />
+                        <NavUtama items={data.admin_core} type="Core" />
+                        <NavUtama items={data.admin_setting} type="Setting" />
+                    </div>
+                )}
+                {isMahasiswa() && <NavUtama items={data.mahasiswa} type="Mahasiswa" />}
+                {isDosen() && <NavUtama items={data.dosen} type="Dosen" />}
+
                 <Separator className="mt-auto" />
-                <NavSecondary items={data.navSecondary} className="" />
+                <NavSecondary items={data.navSecondary} />
             </SidebarContent>
-            <SidebarFooter>
-                <NavUser user={data.user} />
-            </SidebarFooter>
+
+            {/* ✅ Footer hanya tampil jika bukan admin */}
+            {!isAdmin() && data.user && (
+                <SidebarFooter>
+                    <NavUser user={data.user} />
+                </SidebarFooter>
+            )}
         </Sidebar>
     );
 }

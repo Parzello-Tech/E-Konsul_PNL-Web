@@ -16,6 +16,8 @@ import { getUserData } from "@/backend/auth";
 import { BASE_URL } from "@/backend/api";
 import { getAllDosen } from "@/backend/DosenBackend";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
+import { getRelasiByMahasiswaId } from "@/backend/RelasiBimbinganBackend";
 
 export default function FormKonseling() {
     const router = useRouter();
@@ -34,7 +36,15 @@ export default function FormKonseling() {
 
     const [aturSelesai, setAturSelesai] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [listDosen, setListDosen] = useState<{ user_id: string; dosen_id: string; nip: string; nama: string; profile_photo?: string }[]>([]);
+    const [listDosen, setListDosen] = useState<
+        {
+            dosen_id: number;
+            nip: string;
+            nama: string;
+            profile_photo?: string;
+            tipe_bimbingan?: string;
+        }[]
+    >([]);
 
     useEffect(() => {
         const user = getUserData();
@@ -51,7 +61,8 @@ export default function FormKonseling() {
     const fetchDosen = async () => {
         setLoading(true);
         try {
-            const result = await getAllDosen();
+            const user = getUserData();
+            const result = await getRelasiByMahasiswaId(user.profil.mahasiswa_id);
 
             if (!Array.isArray(result)) {
                 console.error("Format data dosen tidak valid:", result);
@@ -59,13 +70,24 @@ export default function FormKonseling() {
                 return;
             }
 
-            // Filter hanya dosen yang valid
-            const filtered = result.filter((d) => d && d.dosen_id && d.nip && d.nama && d.profile_photo);
-
-            // Tambahkan pilihan default
-            setListDosen([{ user_id: "", dosen_id: "", nip: "", nama: "Pilih Dosen Pembimbing", profile_photo: "" }, ...filtered]);
+            // Tambahkan pilihan default (gunakan dosen_id: 0 untuk 'belum dipilih')
+            setListDosen([
+                {
+                    dosen_id: 0,
+                    nip: "",
+                    nama: "Pilih Dosen Pembimbing",
+                    profile_photo: "",
+                },
+                ...result.map((item: { dosen_id: number; nip: string; nama_dosen: string; profile_photo?: string }) => ({
+                    dosen_id: item.dosen_id,
+                    nip: item.nip ?? "-",
+                    nama: item.nama_dosen ?? "Tidak diketahui",
+                    profile_photo: item.profile_photo ?? "",
+                })),
+            ]);
         } catch (err) {
             console.error("Gagal memuat data dosen:", err);
+            setListDosen([]);
         } finally {
             setLoading(false);
         }
@@ -85,14 +107,20 @@ export default function FormKonseling() {
             const result = await res.json();
 
             if (result.status === "success") {
-                alert("Konseling berhasil diajukan!");
-                router.push("/mahasiswa");
+                toast.success("Konseling berhasil diajukan 🎉", {
+                    description: "Anda akan diarahkan ke halaman utama.",
+                });
+                setTimeout(() => router.push("/homepage"), 1500);
             } else {
-                alert("Gagal: " + (result.message || "Tidak diketahui"));
+                toast.error("Gagal mengajukan konseling 😕", {
+                    description: result.message || "Terjadi kesalahan tak dikenal.",
+                });
             }
         } catch (error) {
             console.error("Error:", error);
-            alert("Terjadi kesalahan koneksi.");
+            toast.error("Terjadi kesalahan koneksi 😵", {
+                description: "Periksa koneksi internet Anda.",
+            });
         } finally {
             setLoading(false);
         }
@@ -103,11 +131,9 @@ export default function FormKonseling() {
             <Card>
                 <CardHeader>
                     <div className="mb-2 flex items-center justify-between">
-                        <Link href={"/mahasiswa"}>
-                            <Button variant="outline" size="icon">
-                                <IconChevronLeft />
-                            </Button>
-                        </Link>
+                        <Button size="icon" variant="outline" onClick={() => history.back()}>
+                            <IconChevronLeft />
+                        </Button>
                         <div className="flex items-center gap-2">
                             <IconMessage />
                             <CardTitle className="text-lg font-semibold">Ajukan Bimbingan</CardTitle>
@@ -127,7 +153,7 @@ export default function FormKonseling() {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {listDosen.map((dosen) => (
-                                        <SelectItem key={dosen.dosen_id} value={dosen.dosen_id || "none"}>
+                                        <SelectItem key={dosen.dosen_id} value={String(dosen.dosen_id)}>
                                             <div className="flex items-center gap-3 my-1">
                                                 <Avatar className="h-6 w-6">
                                                     <AvatarImage src={dosen.profile_photo || "https://avatar.iran.liara.run/public/6"} alt={dosen.nama} />
@@ -144,6 +170,7 @@ export default function FormKonseling() {
                                                 <div className="flex flex-col text-left">
                                                     <span className="font-medium">{dosen.nama}</span>
                                                     {dosen.nip && <span className="text-xs text-muted-foreground">NIP: {dosen.nip}</span>}
+                                                    {dosen.tipe_bimbingan && <span className="text-xs text-blue-500">{dosen.tipe_bimbingan}</span>}
                                                 </div>
                                             </div>
                                         </SelectItem>

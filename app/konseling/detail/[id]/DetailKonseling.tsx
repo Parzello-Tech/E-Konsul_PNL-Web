@@ -83,9 +83,12 @@ export default function DetailKonseling({ id_konseling }: DetailKonselingProps) 
                     <section>
                         <span className="font-semibold text-sm">Judul & Deskripsi</span>
                         <Separator className="my-2 border-t border-dashed border-gray-200" />
-                        <div className="flex flex-col">
-                            <span className="text-sm font-medium">{data.topik_konseling || "-"}</span>
-                            <span className="text-sm text-muted-foreground">{data.catatan || "-"}</span>
+                        <div className="flex justify-between items-center gap-4">
+                            <div className="flex flex-col">
+                                <span className="text-sm font-medium">{data.topik_konseling || "-"}</span>
+                                <span className="text-sm text-muted-foreground">{data.catatan || "-"}</span>
+                            </div>
+                            <Badge variant="outline">{data.tujuan_konseling}</Badge>
                         </div>
                     </section>
                     {/* === Dosen Pembimbing === */}
@@ -147,15 +150,20 @@ export default function DetailKonseling({ id_konseling }: DetailKonselingProps) 
                     <section>
                         <span className="font-semibold text-sm">Tanggal Konseling</span>
                         <Separator className="my-2 border-t border-dashed border-gray-200" />
-                        <span className="text-sm">
-                            {data.tanggal_konseling
-                                ? new Date(data.tanggal_konseling).toLocaleDateString("id-ID", {
-                                      day: "2-digit",
-                                      month: "long",
-                                      year: "numeric",
-                                  })
-                                : "-"}
-                        </span>
+                        <div className="flex flex-col">
+                            <span className="font-medium">
+                                {data.tanggal_konseling
+                                    ? new Date(data.tanggal_konseling).toLocaleDateString("id-ID", {
+                                          day: "2-digit",
+                                          month: "long",
+                                          year: "numeric",
+                                      })
+                                    : "-"}
+                            </span>
+                            <span className="text-sm text-muted-foreground">
+                                {data.waktu_mulai} - {data.waktu_selesai}
+                            </span>
+                        </div>
                     </section>
                     {/* === Lampiran === */}
                     {data.lampiran && (

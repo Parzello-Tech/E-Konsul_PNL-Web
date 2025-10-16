@@ -1,3 +1,16 @@
+export interface Prodi {
+    prodi_id: number;
+    nama_prodi: string;
+}
+
+export interface JurusanProdi {
+    jurusan_id: number;
+    nama_jurusan: string;
+    prodi: Prodi[];
+}
+
+/* ------------------- */
+
 export interface Mahasiswa {
     mahasiswa_id: number;
     user_id: number;
@@ -39,4 +52,32 @@ export interface Konseling {
     updated_at: string;
     mahasiswa: Mahasiswa;
     dosen: Dosen;
+}
+
+/* ------------------- */
+
+export interface Profil {
+    mahasiswa_id: number;
+    user_id: number;
+    nim: string;
+    fullname: string;
+    prodi_id: number;
+    semester: number;
+    bio: string;
+    created_at: string;
+    deleted_at: string | null;
+}
+
+export interface UserData {
+    user_id: number;
+    login_id: string;
+    role_id: number;
+    profile_photo: string | null;
+    profil: Profil;
+}
+
+export interface LoginResponse {
+    status: string;
+    message: string;
+    data: UserData;
 }

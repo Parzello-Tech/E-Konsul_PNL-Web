@@ -7,18 +7,18 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 const slides = [
     {
-        title: "Build Smarter, Ship Faster 🚀",
-        description: "Empower your ideas with modern web and mobile solutions from Parzello.",
+        title: "Konseling Lebih Mudah & Terarah 🎓",
+        description: "Bangun komunikasi efektif antara mahasiswa dan dosen pembimbing melalui E-Konsul.",
         image: "https://bisnisia.id/wp-content/uploads/2025/08/Politeknik-Negeri-Lhokseumawe--1920x1440.jpg",
     },
     {
-        title: "Your Vision, Our Code 💻",
-        description: "From design to deployment — we turn ideas into functional digital products.",
+        title: "Bimbingan Akademik Tanpa Batas Waktu 💬",
+        description: "Ajukan, pantau, dan kelola sesi bimbingan langsung dari satu platform terpadu.",
         image: "https://bisnisia.id/wp-content/uploads/2025/08/Politeknik-Negeri-Lhokseumawe--1920x1440.jpg",
     },
     {
-        title: "Scale with Confidence ⚡",
-        description: "Reliable, secure, and scalable systems built for long-term growth.",
+        title: "Kolaborasi Dosen & Mahasiswa Lebih Efisien ⚡",
+        description: "Dukung proses akademik dengan sistem konseling digital yang aman, cepat, dan transparan.",
         image: "https://bisnisia.id/wp-content/uploads/2025/08/Politeknik-Negeri-Lhokseumawe--1920x1440.jpg",
     },
 ];
@@ -44,7 +44,7 @@ export function HeroCarousel() {
                                     <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${item.image})` }} />
                                     <div className="absolute inset-0 bg-black/20" />
                                     <div className="relative z-10 max-w-2xl text-center text-white px-6">
-                                        <h1 className="text-1xl md:text-6xl font-bold mb-4">{item.title}</h1>
+                                        <h1 className="text-1xl md:text-4xl font-bold mb-4">{item.title}</h1>
                                         <p className="text-sm md:text-xl mb-6">{item.description}</p>
                                     </div>
                                 </CardContent>

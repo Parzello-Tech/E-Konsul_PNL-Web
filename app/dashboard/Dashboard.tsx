@@ -10,17 +10,7 @@ export default function DashboardAdmin() {
         { description: "Dosen", icon: <IconUsers />, value: 500, buttonText: "Tampilkan Data" },
         { description: "Jurusan", icon: <IconSchool />, value: 500, buttonText: "Tampilkan Data" },
         { description: "Prodi", icon: <IconSchool />, value: 500, buttonText: "Tampilkan Data" },
-        { description: "Kelas", icon: <IconChalkboard />, value: 500, buttonText: "Tampilkan Data" },
-        { description: "Pembimbing", icon: <IconUserShare />, value: 500, buttonText: "Tampilkan Data" },
-        {
-            description: "Growth Rate",
-            value: "4.5%",
-            badge: (
-                <Badge variant="outline">
-                    <IconTrendingUp /> +4.5%
-                </Badge>
-            ),
-        },
+        { description: "Bimbingan", icon: <IconUserShare />, value: 500, buttonText: "Tampilkan Data" },
     ];
 
     return (
